@@ -1,0 +1,355 @@
+```html
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reralo Messenger</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg:#08090d;
+  --panel:#101219;
+  --panel2:#171a23;
+  --line:rgba(255,255,255,.08);
+  --text:#f6f7fb;
+  --muted:#888fa2;
+  --accent:#8066ff;
+  --green:#37dba0;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--text);
+  font-family:Vazirmatn,sans-serif;min-height:100vh;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{
+  width:min(1200px,100%);height:100dvh;max-height:900px;
+  min-height:540px;margin:auto;padding:14px;
+  display:flex;gap:14px;
+}
+.sidebar{
+  width:350px;flex-shrink:0;background:var(--panel);
+  border:1px solid var(--line);border-radius:24px;
+  padding:20px;display:flex;flex-direction:column;min-height:0;
+}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:25px}
+.logo{
+  width:47px;height:47px;border-radius:16px;
+  background:linear-gradient(140deg,#a38aff,#6242ed);
+  display:grid;place-items:center;font-size:24px;
+  box-shadow:0 5px 25px #8066ff40;
+}
+.brand h1{font-size:19px;margin:0;font-weight:800;letter-spacing:.2px}
+.brand p{font-size:11px;color:var(--muted);margin:3px 0 0}
+.online{color:var(--green);font-size:10px}
+.search{
+  background:#1a1d26;border:1px solid var(--line);
+  border-radius:14px;padding:12px 14px;color:white;
+  width:100%;outline:none;margin-bottom:20px;
+}
+.search:focus{border-color:var(--accent)}
+.section-title{
+  font-size:12px;color:var(--muted);
+  margin-bottom:12px;display:flex;justify-content:space-between;
+}
+.contacts{overflow-y:auto;flex:1;min-height:0}
+.contact{
+  display:flex;align-items:center;gap:11px;
+  padding:12px 9px;border-radius:15px;cursor:pointer;
+  transition:.2s;margin-bottom:4px;border:1px solid transparent;
+}
+.contact:hover,.contact.active{
+  background:#20202f;border-color:#ffffff0c;
+}
+.avatar{
+  width:47px;height:47px;border-radius:17px;
+  display:grid;place-items:center;font-size:21px;
+  flex-shrink:0;position:relative;
+}
+.dot{
+  position:absolute;width:11px;height:11px;border-radius:50%;
+  background:var(--green);border:2px solid var(--panel);
+  bottom:0;left:0;
+}
+.contact-info{flex:1;min-width:0}
+.contact-name{font-size:13px;font-weight:700}
+.preview{
+  color:var(--muted);font-size:11px;margin-top:5px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.contact-meta{font-size:10px;color:var(--muted);text-align:left}
+.add-contact{
+  width:100%;padding:12px;border:1px solid var(--line);
+  background:#ffffff06;color:#ddd6ff;border-radius:14px;
+  margin-top:13px;
+}
+.main{
+  flex:1;min-width:0;border:1px solid var(--line);
+  border-radius:24px;background:var(--panel);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.chat-header{
+  min-height:80px;padding:15px 20px;display:flex;
+  align-items:center;gap:12px;border-bottom:1px solid var(--line);
+}
+.chat-person{flex:1;min-width:0}
+.chat-person strong{font-size:14px}
+.chat-person p{margin:5px 0 0;color:var(--muted);font-size:11px}
+.icon-btn{
+  border:1px solid var(--line);background:#ffffff06;color:white;
+  width:40px;height:40px;border-radius:14px;font-size:17px;
+}
+.messages{
+  flex:1;overflow-y:auto;padding:24px;
+  display:flex;flex-direction:column;gap:15px;
+  background:
+    radial-gradient(ellipse at 50% 0%,#8066ff0a,transparent 60%);
+}
+.day{
+  align-self:center;background:#ffffff08;border:1px solid var(--line);
+  color:var(--muted);font-size:10px;padding:6px 13px;border-radius:20px;
+  margin-bottom:5px;
+}
+.msg{max-width:min(78%,440px);display:flex;flex-direction:column;gap:5px}
+.msg.mine{align-self:flex-start}
+.msg.theirs{align-self:flex-end}
+.bubble{
+  padding:12px 15px;font-size:13px;line-height:1.9;
+  overflow-wrap:anywhere;border:1px solid var(--line);
+}
+.mine .bubble{
+  background:linear-gradient(135deg,#7658f2,#6347d6);
+  border-radius:17px 17px 5px 17px;
+}
+.theirs .bubble{
+  background:#1c202a;border-radius:17px 17px 17px 5px;
+}
+.msg-meta{
+  display:flex;gap:5px;align-items:center;
+  font-size:9px;color:var(--muted);padding:0 4px;
+}
+.mine .msg-meta{justify-content:flex-start}
+.theirs .msg-meta{justify-content:flex-end}
+.ticks{color:#79d8ff}
+.composer-wrap{padding:14px 18px 18px;border-top:1px solid var(--line)}
+.composer{
+  display:flex;align-items:center;gap:10px;
+  background:#191c25;border:1px solid var(--line);
+  padding:7px;border-radius:18px;
+}
+.composer input{
+  flex:1;min-width:0;background:transparent;border:0;
+  outline:none;color:white;padding:9px;font-size:13px;
+}
+.composer input::placeholder{color:#777e90}
+.send{
+  width:43px;height:43px;border:0;border-radius:14px;
+  color:white;background:var(--accent);font-size:19px;
+  box-shadow:0 4px 20px #8066ff35;
+}
+.send:hover{filter:brightness(1.15)}
+.hint{text-align:center;color:#666d80;font-size:10px;margin-top:10px}
+.empty{margin:auto;text-align:center;color:var(--muted);font-size:13px}
+.empty span{display:block;font-size:42px;margin-bottom:12px}
+.back{display:none}
+@media(max-width:680px){
+ .app{padding:0;height:100dvh;min-height:0;gap:0}
+ .sidebar{width:100%;border-radius:0;border:0;padding:17px}
+ .main{display:none;border:0;border-radius:0}
+ .app.chat-open .sidebar{display:none}
+ .app.chat-open .main{display:flex}
+ .back{display:block}
+ .chat-header{padding:12px}
+ .messages{padding:17px 12px}
+ .composer-wrap{padding:10px}
+ .msg{max-width:88%}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">✦</div>
+      <div>
+        <h1>Reralo Messenger</h1>
+        <p>ارتباط، بدون مرز <span class="online">● ONLINE</span></p>
+      </div>
+    </div>
+
+    <input class="search" id="search" placeholder="⌕  جست‌وجوی مخاطب..." />
+
+    <div class="section-title">
+      <span>گفت‌وگوها</span><span id="count">۳ مخاطب</span>
+    </div>
+    <div class="contacts" id="contacts"></div>
+    <button class="add-contact" id="addContact">＋ گفت‌وگوی جدید</button>
+  </aside>
+
+  <main class="main">
+    <header class="chat-header">
+      <button class="icon-btn back" id="back">‹</button>
+      <div class="avatar" id="headAvatar">🧑🏻</div>
+      <div class="chat-person">
+        <strong id="headName">آرین</strong>
+        <p id="headStatus">حساب آزمایشی</p>
+      </div>
+      <button class="icon-btn" id="profile" title="اطلاعات مخاطب">ⓘ</button>
+    </header>
+
+    <section class="messages" id="messages"></section>
+
+    <div class="composer-wrap">
+      <form class="composer" id="form">
+        <button type="button" class="icon-btn" id="emoji" title="ایموجی">☺</button>
+        <input id="messageInput" placeholder="پیامت رو بنویس..." autocomplete="off" />
+        <button class="send" type="submit" aria-label="ارسال پیام">➤</button>
+      </form>
+      <div class="hint">Reralo • نسخه نمایشی پیام‌رسان</div>
+    </div>
+  </main>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+const initialContacts = [
+  {id:"arian",name:"آرین محمدی",avatar:"🧑🏻",color:"#41316b",status:"آنلاین"},
+  {id:"sara",name:"سارا احمدی",avatar:"👩🏻",color:"#693b5b",status:"آخرین بازدید: اخیراً"},
+  {id:"admin",name:"پشتیبانی Reralo",avatar:"✦",color:"#343b66",status:"حساب آزمایشی"}
+];
+
+let contacts;
+let messages;
+try {
+  contacts = JSON.parse(localStorage.getItem("reralo_contacts")) || initialContacts;
+  messages = JSON.parse(localStorage.getItem("reralo_messages")) || {};
+} catch(e) {
+  contacts = initialContacts;
+  messages = {};
+}
+
+let active = contacts[0]?.id || null;
+
+function save(){
+  try{
+    localStorage.setItem("reralo_contacts",JSON.stringify(contacts));
+    localStorage.setItem("reralo_messages",JSON.stringify(messages));
+  }catch(e){}
+}
+
+function getMessages(id){
+  if(!messages[id]) messages[id] = [];
+  return messages[id];
+}
+
+function timeNow(){
+  return new Date().toLocaleTimeString("fa-IR",{
+    hour:"2-digit",minute:"2-digit"
+  });
+}
+
+function renderContacts(){
+  const q=$("search").value.trim().toLowerCase();
+  const filtered=contacts.filter(c=>c.name.toLowerCase().includes(q));
+  $("count").textContent=contacts.length+" مخاطب";
+  $("contacts").innerHTML=filtered.map(c=>{
+    const arr=getMessages(c.id);
+    const last=arr[arr.length-1];
+    return `
+      <div class="contact ${active===c.id?'active':''}" data-id="${c.id}">
+        <div class="avatar" style="background:${c.color}">
+          ${c.avatar}
+          ${c.status==="آنلاین"?'<span class="dot"></span>':""}
+        </div>
+        <div class="contact-info">
+          <div class="contact-name">${escapeHTML(c.name)}</div>
+          <div class="preview">${last?escapeHTML(last.text):"شروع یک گفت‌وگوی جدید"}</div>
+        </div>
+        <div class="contact-meta">${last?last.time:""}</div>
+      </div>`;
+  }).join("");
+}
+
+function escapeHTML(s){
+  return String(s).replace(/[&<>"']/g,c=>({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  })[c]);
+}
+
+function renderChat(){
+  const c=contacts.find(x=>x.id===active);
+  if(!c) return;
+  $("headAvatar").textContent=c.avatar;
+  $("headAvatar").style.background=c.color;
+  $("headName").textContent=c.name;
+  $("headStatus").textContent=c.status;
+  const arr=getMessages(active);
+
+  $("messages").innerHTML=`
+    <div class="day">گفت‌وگوی آزمایشی</div>
+    ${arr.length===0?'<div class="empty"><span>✦</span>هنوز پیامی وجود ندارد<br>اولین پیام رو بفرست!</div>':""}
+    ${arr.map(m=>`
+      <div class="msg ${m.from==='me'?'mine':'theirs'}">
+        <div class="bubble">${escapeHTML(m.text)}</div>
+        <div class="msg-meta">${m.time} ${m.from==='me'?'<span class="ticks">✓✓</span>':""}</div>
+      </div>`).join("")}`;
+  $("messages").scrollTop=$("messages").scrollHeight;
+  renderContacts();
+}
+
+$("contacts").addEventListener("click",e=>{
+  const el=e.target.closest(".contact");
+  if(!el)return;
+  active=el.dataset.id;
+  $("app").classList.add("chat-open");
+  renderChat();
+});
+
+$("search").addEventListener("input",renderContacts);
+
+$("form").addEventListener("submit",e=>{
+  e.preventDefault();
+  const text=$("messageInput").value.trim();
+  if(!text||!active)return;
+  getMessages(active).push({text,from:"me",time:timeNow()});
+  $("messageInput").value="";
+  save();
+  renderChat();
+});
+
+$("back").addEventListener("click",()=>$("app").classList.remove("chat-open"));
+
+$("emoji").addEventListener("click",()=>{
+  $("messageInput").value+=" 😊";
+  $("messageInput").focus();
+});
+
+$("profile").addEventListener("click",()=>{
+  const c=contacts.find(x=>x.id===active);
+  if(c)alert("نام: "+c.name+"\nوضعیت: "+c.status+"\nاین حساب در نسخه نمایشی است.");
+});
+
+$("addContact").addEventListener("click",()=>{
+  const name=prompt("نام مخاطب جدید را وارد کن:");
+  if(!name||!name.trim())return;
+  const id="user_"+Date.now();
+  contacts.push({
+    id,name:name.trim(),avatar:"👤",
+    color:"#39345d",status:"حساب آزمایشی"
+  });
+  active=id;
+  save();
+  renderChat();
+  $("app").classList.add("chat-open");
+});
+
+renderContacts();
+renderChat();
+</script>
+</body>
+</html>
+```
